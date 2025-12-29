@@ -61,7 +61,6 @@ local TDS = {
     placed_towers = {},
     active_strat = true
 }
-
 local upgrade_history = {}
 
 -- // shared for addons
@@ -645,43 +644,22 @@ function TDS:Loadout(...)
 end
 
 -- // load addons
-function TDS:Addons(options)
-    if game_state ~= "GAME" then
-        return false
+function TDS:Addons()
+    if game_state ~= "GAME" then 
+        return false 
     end
+    local url = "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
+    local success, code = pcall(game.HttpGet, game, url)
+    
+    if success then
+        loadstring(code)()
 
-    options = options or {}
-    local urls = options.urls or {
-        "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
-    }
-    local retries = options.retries or 3
-    local timeout = options.timeout or 10
-
-    local http_get = game.HttpGetAsync or game.HttpGet
-    if not http_get or not loadstring then
-        return false
+        repeat 
+            task.wait(0.5) 
+        until TDS.Equip
+        
+        return true
     end
-
-    for _, url in ipairs(urls) do
-        for _ = 1, retries do
-            local ok, code = pcall(http_get, game, url)
-            if ok and type(code) == "string" and #code > 0 then
-                local loaded, err = pcall(loadstring(code))
-                if loaded then
-                    local start = os.clock()
-                    while os.clock() - start < timeout do
-                        if TDS and TDS.Equip then
-                            return true
-                        end
-                        task.wait(0.25)
-                    end
-                end
-            end
-            task.wait(0.2)
-        end
-    end
-
-    return false
 end
 
 -- ingame
@@ -734,37 +712,25 @@ end
 
 function TDS:Place(t_name, px, py, pz)
     if game_state ~= "GAME" then
-        return false
+        return false 
     end
-
-    local playerId = tostring(game:GetService("Players").LocalPlayer.UserId)
-
     local existing = {}
-    for _, tower in ipairs(workspace.Towers:GetChildren()) do
-        existing[tower] = true
+    for _, child in ipairs(workspace.Towers:GetChildren()) do
+        existing[child] = true
     end
 
     do_place_tower(t_name, Vector3.new(px, py, pz))
 
     local new_t
-    local start = os.clock()
-
     repeat
-        for _, tower in ipairs(workspace.Towers:GetChildren()) do
-            if not existing[tower] then
-                local owner = tower:FindFirstChild("Owner")
-                if owner and owner:IsA("StringValue") and owner.Value == playerId then
-                    new_t = tower
-                    break
-                end
+        for _, child in ipairs(workspace.Towers:GetChildren()) do
+            if not existing[child] then
+                new_t = child
+                break
             end
         end
         task.wait(0.05)
-    until new_t or os.clock() - start > 5
-
-    if not new_t then
-        return false
-    end
+    until new_t
 
     table.insert(self.placed_towers, new_t)
     return #self.placed_towers
