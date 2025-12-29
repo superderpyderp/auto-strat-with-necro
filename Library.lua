@@ -661,6 +661,7 @@ function TDS:Addons()
         return true
     end
 end
+
 -- ingame
 function TDS:TeleportToLobby()
     send_to_lobby()
@@ -963,9 +964,37 @@ local function start_anit_lag()
     end)
 end
 
+local function start_Anti_Afk()
+    task.spawn(function()
+        local VIM = game:GetService("VirtualInputManager")
+        local holdTime = 0.1
+        local idleThreshold = 60 
+        local player = game:GetService("Players").LocalPlayer
+        local lastPosition = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position or Vector3.new()
+        local lastMoveTime = tick()
+
+        while true do
+            task.wait(1)
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = player.Character.HumanoidRootPart
+                if (hrp.Position - lastPosition).Magnitude > 0.1 then
+                    lastPosition = hrp.Position
+                    lastMoveTime = tick()
+                elseif tick() - lastMoveTime >= idleThreshold then
+                    VIM:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
+                    task.wait(holdTime)
+                    VIM:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
+                    lastMoveTime = tick()
+                end
+            end
+        end
+    end)
+end
+
 start_back_to_lobby()
 start_auto_skip()
 start_auto_pickups()
 start_anit_lag()
+start_Anti_Afk()
 
 return TDS
