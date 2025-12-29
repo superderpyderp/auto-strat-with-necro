@@ -788,7 +788,7 @@ end
 
 function TDS:Upgrade(idx, p_id)
     local t = self.placed_towers[idx]
-    if t and t:FindFirstChild("Owner") and tonumber(t.Owner.Value) == game.Players.LocalPlayer.UserId then
+    if t then
         do_upgrade_tower(t, p_id or 1)
         upgrade_history[idx] = (upgrade_history[idx] or 0) + 1
     end
