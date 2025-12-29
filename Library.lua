@@ -643,6 +643,7 @@ function TDS:Loadout(...)
     end
 end
 
+-- // load addons
 function TDS:Addons(options)
     if game_state ~= "GAME" then
         return false
@@ -664,7 +665,7 @@ function TDS:Addons(options)
         for _ = 1, retries do
             local ok, code = pcall(http_get, game, url)
             if ok and type(code) == "string" and #code > 0 then
-                local loaded = pcall(loadstring(code))
+                local loaded, err = pcall(loadstring(code))
                 if loaded then
                     local start = os.clock()
                     while os.clock() - start < timeout do
@@ -680,13 +681,6 @@ function TDS:Addons(options)
     end
 
     return false
-end
-
-if game_state == "GAME" then
-    local success = TDS:Addons()
-    if not success then
-        game:GetService("Players").LocalPlayer:Kick("Failed to enter a key in time, or your executor is trash.")
-    end
 end
 
 -- ingame
