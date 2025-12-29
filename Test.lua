@@ -64,7 +64,7 @@ local TDS = {
 }
 
 -- \\ cleanup placed towers on removal
-if identify_game_state ~= "GAME" then
+if identify_game_state ~= "LOBBY" then
     workspace.Towers.ChildRemoved:Connect(function(tower)
         for uid, stored in pairs(TDS.placed_towers) do
             if stored == tower then
