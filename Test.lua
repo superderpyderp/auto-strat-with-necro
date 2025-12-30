@@ -55,7 +55,8 @@ local ItemNames = {
     ["132155797622156"] = "Christmas Tree(s)",
     ["124065875200929"] = "Fruit Cake(s)",
     ["17429541513"] = "Barricade(s)",
-    ["110415073436604"] = "Holy Hand Grenade(s)"
+    ["110415073436604"] = "Holy Hand Grenade(s)",
+    ["139414922355803"] = "Present Clusters(s)"
 }
 
 -- // tower management core
