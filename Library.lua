@@ -103,7 +103,7 @@ local function get_all_rewards()
         Coins = 0, 
         Gems = 0, 
         XP = 0, 
-        Wave = "0",
+        Wave = 0,
         Level = 0,
         Time = "00:00",
         Status = "UNKNOWN",
@@ -127,16 +127,6 @@ local function get_all_rewards()
                 break
             end
         end
-    end
-
-    local wave_label = local_player.PlayerGui.ReactGameTopGameDisplay:FindFirstChild("Frame")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame:FindFirstChild("wave")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame.wave:FindFirstChild("container")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame.wave.container:FindFirstChild("value")
-
-    if wave_label and wave_label:FindFirstChild("textLabel") then
-        local wave_txt = wave_label.textLabel.Text
-        results.Wave = wave_txt
     end
 
     local top_banner = rewards_screen and rewards_screen:FindFirstChild("RewardBanner")
@@ -172,6 +162,8 @@ local function get_all_rewards()
                         elseif text:lower():find("x%d+") then 
                             local displayName = ItemNames[icon_id] or "Unknown Item (" .. icon_id .. ")"
                             table.insert(results.Others, {Amount = text:match("x%d+"), Name = displayName})
+                        elseif text:find("Wave") or text:find("Waves") then
+                            results.Wave = amt
                         end
                     end
                 end
