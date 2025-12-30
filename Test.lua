@@ -129,17 +129,6 @@ local function get_all_rewards()
         end
     end
 
-    local wave_label = local_player.PlayerGui.ReactGameTopGameDisplay:FindFirstChild("Frame")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame:FindFirstChild("wave")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame.wave:FindFirstChild("container")
-        and local_player.PlayerGui.ReactGameTopGameDisplay.Frame.wave.container:FindFirstChild("value")
-
-    if wave_label and wave_label:FindFirstChild("textLabel") then
-        local wave_txt = wave_label.textLabel.Text
-        local wave_num = tonumber(wave_txt:match("^(%d+)")) or 0
-        results.Wave = wave_num
-    end
-
     local top_banner = rewards_screen and rewards_screen:FindFirstChild("RewardBanner")
     if top_banner and top_banner:FindFirstChild("textLabel") then
         local txt = top_banner.textLabel.Text:upper()
@@ -173,6 +162,8 @@ local function get_all_rewards()
                         elseif text:lower():find("x%d+") then 
                             local displayName = ItemNames[icon_id] or "Unknown Item (" .. icon_id .. ")"
                             table.insert(results.Others, {Amount = text:match("x%d+"), Name = displayName})
+                        elseif text:find("Wave") or text:find("Waves") then
+                            results.Wave = amt
                         end
                     end
                 end
@@ -234,7 +225,7 @@ local function handle_post_match()
                 "> **Time:** `" .. match.Time .. "`\n" ..
                 "> **Current Level:** `" .. match.Level .. "`\n" ..
                 "> **Waves:** `" .. match.Wave .. "`\n",
-
+                
             fields = {
                 {
                     name = "✨ Rewards",
@@ -255,7 +246,7 @@ local function handle_post_match()
                     inline = true
                 }
             },
-            footer = { text = "Logged for " .. local_player.Name .. " • TDS AutoStrat" },
+            footer = { text = "Logged for " .. local_player.DisplayName .. " • TDS AutoStrat" },
             timestamp = DateTime.now():ToIsoDate()
         }}
     }
@@ -268,6 +259,8 @@ local function handle_post_match()
             Body = game:GetService("HttpService"):JSONEncode(post_data)
         })
     end)
+
+    task.wait(1.5)
 
     send_to_lobby()
 end
@@ -300,7 +293,7 @@ local function log_match_start()
                     inline = false
                 }
             },
-            footer = { text = "Logged for " .. local_player.Name .. " • TDS AutoStrat" },
+            footer = { text = "Logged for " .. local_player.DisplayName .. " • TDS AutoStrat" },
             timestamp = DateTime.now():ToIsoDate()
         }}
     }
@@ -1049,10 +1042,21 @@ local function start_anti_afk()
     end)
 end
 
+local function start_rejoin_on_disconnect()
+    task.spawn(function()
+        game.Players.PlayerRemoving:connect(function (plr)
+            if plr == game.Players.LocalPlayer then
+                game:GetService('TeleportService'):Teleport(3260590327, plr)
+            end
+        end)
+    end)
+end
+
 start_back_to_lobby()
 start_auto_skip()
 start_auto_pickups()
 start_anti_lag()
 start_anti_afk()
+start_rejoin_on_disconnect()
 
 return TDS
