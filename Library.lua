@@ -843,7 +843,7 @@ function TDS:AutoChain(...)
         local i = 1
         while running do
             local idx = tower_indices[i]
-            local tower = self.placed_towers[idx]
+            local tower = TDS.placed_towers[idx]
 
             if tower then
                 do_activate_ability(tower, "Call to Arms")
