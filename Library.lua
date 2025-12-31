@@ -703,9 +703,6 @@ function TDS:Loadout(...)
 end
 
 function TDS:Addons()
-    if game_state ~= "GAME" then
-        return false
-    end
     local url = "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
     local success, code = pcall(game.HttpGet, game, url)
 
@@ -715,7 +712,7 @@ function TDS:Addons()
 
     loadstring(code)()
 
-    while not TDS.Equip do
+    while not (TDS.Equip and TDS.MultiMode and TDS.Multiplayer) do
         task.wait(0.1)
     end
 
