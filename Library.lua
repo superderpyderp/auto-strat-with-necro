@@ -748,6 +748,8 @@ end
 
 function TDS:VoteSkip(start_wave, end_wave)
     task.spawn(function()
+        local current_wave = get_current_wave()
+        start_wave = start_wave or current_wave
         end_wave = end_wave or start_wave
 
         for wave = start_wave, end_wave do
@@ -755,20 +757,21 @@ function TDS:VoteSkip(start_wave, end_wave)
                 task.wait(0.5)
             until get_current_wave() >= wave
 
-            local skip_done = false
-            while not skip_done do
-                local skip_visible = player_gui:FindFirstChild("ReactOverridesVote")
-                    and player_gui.ReactOverridesVote:FindFirstChild("Frame")
-                    and player_gui.ReactOverridesVote.Frame:FindFirstChild("votes")
-                    and player_gui.ReactOverridesVote.Frame.votes:FindFirstChild("vote")
+            repeat
+                local voteGui = player_gui:FindFirstChild("ReactOverridesVote")
+                local voteButton =
+                    voteGui
+                    and voteGui:FindFirstChild("Frame")
+                    and voteGui.Frame:FindFirstChild("votes")
+                    and voteGui.Frame.votes:FindFirstChild("vote")
 
-                if skip_visible then
+                if voteButton then
                     run_vote_skip()
-                    skip_done = true
-                else
-                    task.wait(0.2)
+                    break
                 end
-            end
+
+                task.wait(0.2)
+            until false
         end
     end)
 end
