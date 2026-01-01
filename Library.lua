@@ -765,7 +765,6 @@ function TDS:VoteSkip(start_wave, end_wave)
                     and player_gui.ReactOverridesVote.Frame.votes:FindFirstChild("vote", true)
 
                 if skip_visible and skip_visible.Position == UDim2.new(0.5, 0, 0.5, 0) then
-                    print("32523")
                     run_vote_skip()
                     skip_done = true
                 else
