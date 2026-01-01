@@ -416,6 +416,22 @@ local function is_map_available(name)
             end
         end
     end
+
+    local total_player = #players_service:GetChildren()
+    repeat
+        remote_event:FireServer("LobbyVoting", "Veto")
+        wait(1)
+    until player_gui:WaitForChild("ReactGameIntermission"):WaitForChild("Frame"):WaitForChild("buttons"):WaitForChild("veto"):WaitForChild("value").Text == "Veto ("..total_player.."/"..total_player..")"
+
+    for _, g in ipairs(workspace:GetDescendants()) do
+        if g:IsA("SurfaceGui") and g.Name == "MapDisplay" then
+            local t = g:FindFirstChild("Title")
+            if t and t.Text == name then
+                return true
+            end
+        end
+    end
+
     return false
 end
 
