@@ -148,3 +148,17 @@ shared.AutoStratGUI = {
     Console = Console,
     bckpattern = bckpattern
 }
+
+local ToggleButton = Instance.new("TextButton", TDSGui)
+ToggleButton.Size = UDim2.new(0, 100, 0, 30)
+ToggleButton.Position = UDim2.new(0, 10, 1, -40)
+ToggleButton.Text = "Toggle GUI"
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.TextSize = 14
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+Instance.new("UICorner", ToggleButton).CornerRadius = UDim.new(0, 6)
+
+ToggleButton.MouseButton1Click:Connect(function()
+    bckpattern.Visible = not bckpattern.Visible
+end)

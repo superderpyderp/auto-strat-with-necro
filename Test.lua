@@ -2,7 +2,6 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Sources/GuiSource.lua"))()
 local Console = shared.AutoStratGUI.Console
-local bckpattern = shared.AutoStratGUI.bckpattern
 
 local function identify_game_state()
     local players = game:GetService("Players")
