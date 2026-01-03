@@ -610,6 +610,7 @@ local function get_current_wave()
 end
 
 local function do_place_tower(t_name, t_pos)
+    log("Placing tower: " .. t_name, "green")
     while true do
         local ok, res = pcall(function()
             return remote_func:InvokeServer("Troops", "Pl\208\176ce", {
@@ -621,7 +622,6 @@ local function do_place_tower(t_name, t_pos)
         if ok and check_res_ok(res) then return true end
         task.wait(0.25)
     end
-    log("Placing tower: " .. t_name, "green")
 end
 
 local function do_upgrade_tower(t_obj, path_id)
