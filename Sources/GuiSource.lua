@@ -57,7 +57,7 @@ local function createShadow(parent)
 	sh.Position = UDim2.new(0.5,0,0.5,0)
 	sh.Size = UDim2.new(1,0,1,0)
 	sh.Image = "rbxassetid://1316045217"
-	sh.ImageTransparency = 0.80
+	sh.ImageTransparency = 0.88
 	sh.ScaleType = Enum.ScaleType.Slice
 	sh.SliceCenter = Rect.new(10,10,118,118)
 	return sh
