@@ -41,6 +41,7 @@ local auto_skip_running = false
 local auto_claim_rewards = false
 local anti_lag_running = false
 local auto_chain_running = false
+local auto_dj_running = false
 
 local ColorMap = {
     green = "#2BFFAE",
@@ -1358,6 +1359,40 @@ local function start_auto_chain()
     end)
 end
 
+local function start_auto_dj_booth()
+    if auto_dj_running or not _G.AutoDJ then return end
+    auto_dj_running = true
+
+    task.spawn(function()
+        while _G.AutoDJ do
+            local towers_folder = workspace:FindFirstChild("Towers")
+
+            if towers_folder then
+                for _, towers in ipairs(towers_folder:GetDescendants()) do
+                    if towers:IsA("Folder") and towers.Name == "TowerReplicator"
+                    and towers:GetAttribute("Name") == "DJ Booth"
+                    and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId
+                    and (towers:GetAttribute("Upgrade") or 0) >= 3 then
+                        DJ = towers.Parent
+                    end
+                end
+            end
+
+            if DJ then
+                remote_func:InvokeServer(
+                    "Troops",
+                    "Abilities",
+                    "Activate",
+                    { Troop = DJ, Name = "Drop The Beat", Data = {} }
+                )
+                task.wait(1)
+            end
+        end
+
+        auto_dj_running = false
+    end)
+end
+
 task.spawn(function()
     while true do
         if _G.AutoPickups and not auto_pickups_running then
@@ -1370,6 +1405,10 @@ task.spawn(function()
 
         if _G.AutoChain and not auto_chain_running then
             start_auto_chain()
+        end
+
+        if _G.AutoDJ and not auto_dj_running then
+            start_auto_dj_booth()
         end
 
         if _G.ClaimRewards and not auto_claim_rewards then
