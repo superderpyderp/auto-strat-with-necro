@@ -119,7 +119,7 @@ text_box.Parent = frame
 Instance.new("UICorner", text_box).CornerRadius = UDim.new(0, 4)
 
 task.spawn(function()
-    if tds:addons() then
+    if TDS:Addons() then
         text_box.PlaceholderText = "Type tower name..."
         text_box.TextEditable = true
     end
@@ -136,4 +136,4 @@ text_box.FocusLost:Connect(function(enter_pressed)
     text_box.Text = ""
 end)
 
-return tds
+return TDS
