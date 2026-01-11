@@ -11,7 +11,7 @@ local CONFIG_FILE = "ADS_Config.json"
 _G.AutoMercenary = _G.AutoMercenary or false
 _G.PathDistance = _G.PathDistance or 0
 _G.SellFarms = _G.SellFarms or false
-_G.SellFarmsWave = _G.SellFarmsWave or 13
+_G.SellFarmsWave = _G.SellFarmsWave or 39
 
 local function save_settings()
     local data = {
@@ -99,7 +99,7 @@ header_mask.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
 header_mask.BorderSizePixel = 0
 
 local title_label = Instance.new("TextLabel", header_frame)
-title_label.Size = UDim2.new(1, -50, 1, 0)
+title_label.Size = UDim2.new(1, -90, 1, 0)
 title_label.Position = UDim2.new(0, 15, 0, 0)
 title_label.Text = "AFK Defense Simulator"
 title_label.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -107,6 +107,36 @@ title_label.BackgroundTransparency = 1
 title_label.Font = Enum.Font.GothamBold
 title_label.TextSize = 14
 title_label.TextXAlignment = Enum.TextXAlignment.Left
+
+local min_btn = Instance.new("TextButton", header_frame)
+min_btn.Size = UDim2.new(0, 24, 0, 24)
+min_btn.Position = UDim2.new(1, -35, 0.5, -12)
+min_btn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+min_btn.Text = "-"
+min_btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+min_btn.Font = Enum.Font.GothamBold
+min_btn.TextSize = 18
+Instance.new("UICorner", min_btn).CornerRadius = UDim.new(0, 6)
+
+local open_button = Instance.new("TextButton", tds_gui)
+open_button.Size = UDim2.new(0, 100, 0, 30)
+open_button.Position = UDim2.new(0.5, -50, 0, 10)
+open_button.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+open_button.Text = "OPEN MENU"
+open_button.TextColor3 = Color3.fromRGB(255, 255, 255)
+open_button.Font = Enum.Font.GothamBold
+open_button.TextSize = 12
+open_button.Visible = false
+Instance.new("UICorner", open_button).CornerRadius = UDim.new(0, 6)
+
+local function toggle_gui()
+    local is_visible = main_frame.Visible
+    main_frame.Visible = not is_visible
+    open_button.Visible = is_visible
+end
+
+min_btn.MouseButton1Click:Connect(toggle_gui)
+open_button.MouseButton1Click:Connect(toggle_gui)
 
 local tab_bar = Instance.new("Frame", main_frame)
 tab_bar.Size = UDim2.new(1, 0, 0, 30)
