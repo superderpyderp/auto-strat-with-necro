@@ -1329,30 +1329,37 @@ local function start_anti_lag()
 end
 
 local function start_anti_afk()
-    local Players = game:GetService("Players")
-    local GC = getconnections and getconnections or get_signal_cons
+    task.spawn(function()
+        local core_gui = game:GetService("CoreGui")
+        local overlay = core_gui:WaitForChild("RobloxPromptGui"):WaitForChild("promptOverlay")
 
-    if GC then
-        for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
-            if v.Disable then
-                v:Disable()
-            elseif v.Disconnect then
-                v:Disconnect()
+        overlay.ChildAdded:Connect(function(a)
+            if a.Name == 'ErrorPrompt' then
+                while true do
+                    teleport_service:Teleport(game.PlaceId)
+                    task.wait(5)
+                end
+            end
+        end)
+    end)
+
+    task.spawn(function()
+        local lobby_timer = 0
+        local time_limit = 60 
+
+        while game_state == "LOBBY" do
+            task.wait(1)
+            lobby_timer = lobby_timer + 1
+
+            if lobby_timer == 20 then
+                print("Potentially stuck, waiting 40 seconds before rejoining.")
+            end
+
+            if lobby_timer >= time_limit then
+                game:GetService("TeleportService"):Teleport(3260590327, game.Players.LocalPlayer)
+                break 
             end
         end
-    else
-        Players.LocalPlayer.Idled:Connect(function()
-            local VirtualUser = game:GetService("VirtualUser")
-            VirtualUser:CaptureController()
-            VirtualUser:ClickButton2(Vector2.new())
-        end)
-    end
-
-    local ANTIAFK = Players.LocalPlayer.Idled:Connect(function()
-        local VirtualUser = game:GetService("VirtualUser")
-        VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-        task.wait(1)
-        VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     end)
 end
 
@@ -1580,24 +1587,5 @@ end
 start_back_to_lobby()
 start_anti_afk()
 start_rejoin_on_disconnect()
-
-task.spawn(function()
-    local lobby_timer = 0
-    local time_limit = 60 
-
-    while game_state == "LOBBY" do
-        task.wait(1)
-        lobby_timer = lobby_timer + 1
-
-        if lobby_timer == 20 then
-            log("Potentially stuck, waiting 40 seconds before rejoining.")
-        end
-
-        if lobby_timer >= time_limit then
-            teleport_service:Teleport(3260590327, local_player)
-            break 
-        end
-    end
-end)
 
 return TDS
