@@ -45,7 +45,6 @@ local auto_chain_running = false
 local auto_dj_running = false
 local auto_mercenary_running = false
 local sell_farms_running = false
-local auto_rejoin_lobby_running = false
 
 local ColorMap = {
     green = "#2BFFAE",
@@ -1256,7 +1255,7 @@ local function start_back_to_lobby()
     back_to_lobby_running = true
 
     task.spawn(function()
-        while _G.RejoinLobby do
+        while true do
             pcall(function()
                 handle_post_match()
             end)
@@ -1559,10 +1558,6 @@ task.spawn(function()
         if _G.AntiLag and not anti_lag_running then
             start_anti_lag()
         end
-
-        if _G.RejoinLobby and not back_to_lobby_running then
-            start_back_to_lobby()
-        end
         
         task.wait(1)
     end
@@ -1572,6 +1567,7 @@ if _G.ClaimRewards and not auto_claim_rewards then
     start_claim_rewards()
 end
 
+start_back_to_lobby()
 start_anti_afk()
 
 return TDS
