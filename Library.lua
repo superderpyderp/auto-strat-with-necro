@@ -1348,7 +1348,7 @@ local function start_anti_afk()
         while game_state == "LOBBY" do 
             task.wait(1)
             lobby_timer = lobby_timer + 1
-            if lobby_timer >= 60 then
+            if lobby_timer >= 240 then
                 teleport_service:Teleport(3260590327)
                 break 
             end
