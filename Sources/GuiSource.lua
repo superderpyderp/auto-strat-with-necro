@@ -37,7 +37,7 @@ local function load_settings()
         AutoSkip = false, AutoPickups = false, AutoChain = false, AutoDJ = false,
         AntiLag = false, ClaimRewards = false, SendWebhook = false, WebhookURL = "",
         AutoMercenary = false, PathDistance = 0, SellFarms = false, SellFarmsWave = 13,
-        RejoinLobby = false
+        RejoinLobby = true
     }
     if isfile(CONFIG_FILE) then
         local success, decoded = pcall(function() return http_service:JSONDecode(readfile(CONFIG_FILE)) end)
