@@ -847,7 +847,6 @@ function TDS:Loadout(...)
             repeat
                 local ok = pcall(function()
                     remote:InvokeServer("Inventory", "Unequip", "tower", current_tower)
-                    log("Unequipped: " .. tostring(current_tower), "orange")
                     task.wait(0.3)
                 end)
                 if ok then unequip_done = true else task.wait(0.2) end
