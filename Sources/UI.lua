@@ -1618,7 +1618,7 @@ function Update:Window(Config)
 			});
 			UIGradient.Parent = Line;
 		end;
-        function main:Box(titleText)
+        function main:Box(titleText, boxSize)
             local BoxFrame = Instance.new("Frame")
             local BoxCorner = Instance.new("UICorner")
             local Title = Instance.new("TextLabel")
@@ -1630,7 +1630,7 @@ function Update:Window(Config)
             BoxFrame.BackgroundColor3 = _G.Primary
             BoxFrame.BackgroundTransparency = 0.8
             BoxFrame.Position = UDim2.new(0, 0, 0, 0)
-            BoxFrame.Size = UDim2.new(1, 0, 0, 270)
+            BoxFrame.Size = boxSize
             BoxCorner.CornerRadius = UDim.new(0, 5)
             BoxCorner.Parent = BoxFrame
             Title.Name = "BoxTitle"
