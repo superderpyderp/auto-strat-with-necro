@@ -1,3 +1,4 @@
+local TDS = loadstring(game:HttpGet("https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Library.lua"))()
 TDS:Addons()
 
 TDS:Loadout("Scout", "Firework Technician", "Hacker", "Brawler", "DJ Booth")
