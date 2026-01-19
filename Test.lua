@@ -117,8 +117,11 @@ local default_settings = {
     AutoPickups = false,
     ClaimRewards = false,
     SendWebhook = false,
+    NoRecoil = false,
     SellFarmsWave = 1,
-    WebhookURL = ""
+    WebhookURL = "",
+    Cooldown = 0.01,
+    Multiply = 60
 }
 
 local last_state = {}
@@ -145,7 +148,7 @@ local ItemNames = {
 }
 
 -- // tower management core
-local TDS = {
+TDS = {
     placed_towers = {},
     active_strat = true,
     matchmaking_map = {
@@ -454,9 +457,9 @@ local Main = Window:Tab({Title = "Main", Icon = "star"}) do
         Title = "Upgrade Selected",
         Desc = "",
         Callback = function()
-            if current_equipped_towers then
+            if selected_tower then
                 for _, v in pairs(workspace.Towers:GetChildren()) do
-                    if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == current_equipped_towers and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
+                    if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == selected_tower and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
                         remote_func:InvokeServer("Troops", "Upgrade", "Set", {Troop = v})
                     end
                 end
@@ -474,9 +477,9 @@ local Main = Window:Tab({Title = "Main", Icon = "star"}) do
         Title = "Sell Selected",
         Desc = "",
         Callback = function()
-            if current_equipped_towers then
+            if selected_tower then
                 for _, v in pairs(workspace.Towers:GetChildren()) do
-                    if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == current_equipped_towers and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
+                    if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == selected_tower and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
                         remote_func:InvokeServer("Troops", "Sell", {Troop = v})
                     end
                 end
@@ -900,18 +903,20 @@ local Strategies = Window:Tab({Title = "Strategies", Icon = "newspaper"}) do
             set_setting("Frost", v)
 
             if v then
-                local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Frost.lua"
-                local content = game:HttpGet(url)
-                writefile("FrostMode.lua", content)
-                
-                loadstring(content)()
-
-                Window:Notify({
-                    Title = "ADS",
-                    Desc = "Successfully downloaded and will now run the Strategy!",
-                    Time = 3,
-                    Type = "normal"
-                })
+                 task.spawn(function()
+                    local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Frost.lua"
+                    local content = game:HttpGet(url)
+                    
+                    while not (TDS and TDS.Loadout) do
+                        task.wait(0.5) 
+                    end
+                    
+                    local func, err = loadstring(content)
+                    if func then
+                        func() 
+                        Window:Notify({ Title = "ADS", Desc = "Running...", Time = 3 })
+                    end
+                end)
             end
         end
     })
@@ -924,18 +929,20 @@ local Strategies = Window:Tab({Title = "Strategies", Icon = "newspaper"}) do
             set_setting("Fallen", v)
 
             if v then
-                local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Fallen.lua"
-                local content = game:HttpGet(url)
-                writefile("FallenMode.lua", content)
-                
-                loadstring(content)()
-
-                Window:Notify({
-                    Title = "ADS",
-                    Desc = "Successfully downloaded and will now run the Strategy!",
-                    Time = 3,
-                    Type = "normal"
-                })
+                task.spawn(function()
+                    local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Fallen.lua"
+                    local content = game:HttpGet(url)
+                    
+                    while not (TDS and TDS.Loadout) do
+                        task.wait(0.5) 
+                    end
+                    
+                    local func, err = loadstring(content)
+                    if func then
+                        func() 
+                        Window:Notify({ Title = "ADS", Desc = "Running...", Time = 3 })
+                    end
+                end)
             end
         end
     })
@@ -948,18 +955,20 @@ local Strategies = Window:Tab({Title = "Strategies", Icon = "newspaper"}) do
             set_setting("Easy", v)
 
             if v then
-                local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Easy.lua"
-                local content = game:HttpGet(url)
-                writefile("EasyMode.lua", content)
-                
-                loadstring(content)()
-
-                Window:Notify({
-                    Title = "ADS",
-                    Desc = "Successfully downloaded and will now run the Strategy!",
-                    Time = 3,
-                    Type = "normal"
-                })
+                task.spawn(function()
+                    local url = "https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Strategies/Easy.lua"
+                    local content = game:HttpGet(url)
+                    
+                    while not (TDS and TDS.Loadout) do
+                        task.wait(0.5) 
+                    end
+                    
+                    local func, err = loadstring(content)
+                    if func then
+                        func() 
+                        Window:Notify({ Title = "ADS", Desc = "Running...", Time = 3 })
+                    end
+                end)
             end
         end
     })
@@ -968,6 +977,7 @@ end
 Window:Line()
 
 local Misc = Window:Tab({Title = "Misc", Icon = "box"}) do
+    Misc:Section({Title = "Misc"})
     Misc:Toggle({
         Title = "Enable Anti-Lag",
         Desc = "Boosts your FPS",
@@ -1001,6 +1011,82 @@ local Misc = Window:Tab({Title = "Misc", Icon = "box"}) do
         Value = _G.ClaimRewards,
         Callback = function(v)
             set_setting("ClaimRewards", v)
+        end
+    })
+
+    Misc:Section({Title = "Miscellaneous"})
+    Misc:Textbox({
+        Title = "Cooldown:",
+        Desc = "",
+        Placeholder = "https://discord.com/api/webhooks/...",
+        Value = _G.Cooldown,
+        ClearTextOnFocus = true,
+        Callback = function(value)
+            if value ~= 0 then
+                set_setting("Cooldown", value)
+                
+                Window:Notify({
+                    Title = "ADS",
+                    Desc = "Cooldown is successfully set!",
+                    Time = 3,
+                    Type = "normal"
+                })
+            end
+        end
+    })
+
+    Misc:Textbox({
+        Title = "Multiply:",
+        Desc = "",
+        Placeholder = "https://discord.com/api/webhooks/...",
+        Value = _G.Multiply,
+        ClearTextOnFocus = true,
+        Callback = function(value)
+            if value ~= 0 then
+                set_setting("Multiply", value)
+                
+                Window:Notify({
+                    Title = "ADS",
+                    Desc = "Cooldown is successfully set!",
+                    Time = 3,
+                    Type = "normal"
+                })
+            end
+        end
+    })
+
+    Misc:Button({
+        Title = "Apply Gatling",
+        Callback = function()
+            if hookmetamethod then
+                Window:Notify({
+                    Title = "ADS",
+                    Desc = "Successfully applied Gatling Gun Settings",
+                    Time = 3,
+                    Type = "normal"
+                })
+
+                local ggchannel = require(game.ReplicatedStorage.Resources.Universal.NewNetwork).Channel("GatlingGun")
+                local gganim = require(game.ReplicatedStorage.Content.Tower["Gatling Gun"].Animator)
+                
+                gganim._fireGun = function(self)
+                    local cam = require(game.ReplicatedStorage.Content.Tower["Gatling Gun"].Animator.CameraController)
+                    local pos = cam.result and cam.result.Position or cam.position
+                    
+                    for i = 1, _G.Multiply do
+                        ggchannel:fireServer("Fire", pos, workspace:GetAttribute("Sync"), workspace:GetServerTimeNow())
+                    end
+                    
+                    self:Wait(_G.Cooldown)
+                end
+            else
+                Window:Notify({
+                    Title = "ADS",
+                    Desc = "Your executor is not supported, please use a different one!",
+                    Time = 3,
+                    Type = "normal"
+                })
+            end
         end
     })
 
@@ -1045,10 +1131,16 @@ end
 Window:Line()
 
 local Settings = Window:Tab({Title = "Settings", Icon = "settings"}) do
+    Settings:Section({Title = "Settings"})
     Settings:Button({
         Title = "Save Settings",
         Callback = function()
-            Window:Notify({Title = "Success", Desc = "Settings Saved!", Time = 2})
+            Window:Notify({
+                    Title = "ADS",
+                    Desc = "Settings Saved!",
+                    Time = 3,
+                    Type = "normal"
+                })
             load_settings()
         end
     })
@@ -1056,7 +1148,12 @@ local Settings = Window:Tab({Title = "Settings", Icon = "settings"}) do
     Settings:Button({
         Title = "Load Settings",
         Callback = function()
-            Window:Notify({Title = "Success", Desc = "Settings Loaded!", Time = 2})
+            Window:Notify({
+                    Title = "ADS",
+                    Desc = "Settings Loaded!",
+                    Time = 3,
+                    Type = "normal"
+                })
             save_settings()
         end
     })
@@ -1423,6 +1520,10 @@ end
 
 -- // timescale logic
 local function set_game_timescale(target_val)
+    if game_state ~= "GAME" then 
+        return false 
+    end
+
     local speed_list = {0, 0.5, 1, 1.5, 2}
 
     local target_idx
@@ -1463,6 +1564,10 @@ local function set_game_timescale(target_val)
 end
 
 local function unlock_speed_tickets()
+    if game_state ~= "GAME" then 
+        return false 
+    end
+
     if local_player.TimescaleTickets.Value >= 1 then
         if game.Players.LocalPlayer.PlayerGui.ReactUniversalHotbar.Frame.timescale.Lock.Visible then
             replicated_storage.RemoteFunction:InvokeServer('TicketsManager', 'UnlockTimeScale')
