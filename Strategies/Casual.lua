@@ -1,4 +1,4 @@
-TDS:Loadout("Shotgunner", "None", "None", "None", "None")
+TDS:Loadout("Shotgunner")
 TDS:Mode("Casual")
 TDS:GameInfo("Simplicity", {})
 
