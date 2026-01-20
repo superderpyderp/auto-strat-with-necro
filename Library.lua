@@ -1042,7 +1042,7 @@ local Strategies = Window:Tab({Title = "Strategies", Icon = "newspaper"}) do
     Strategies:Section({Title = "Other Strategies"})
     Strategies:Toggle({
         Title = "Hardcore Mode",
-        Desc = "Skill tree: Not needed\n\nTowers:\nFarm,\nGolden Scout,\nDJ Booth,\nCommander,\nElectroshocker,\nRanger,\nFreezer,\nGolden Minigunner",
+        Desc = "Towers:\nFarm,\nGolden Scout,\nDJ Booth,\nCommander,\nElectroshocker,\nRanger,\nFreezer,\nGolden Minigunner",
         Value = _G.Hardcore,
         Callback = function(v)
             set_setting("Hardcore", v)
