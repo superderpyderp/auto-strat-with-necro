@@ -1506,12 +1506,11 @@ local function rejoin_match()
 
         if current_mode then
             local ok, result = pcall(function()
-                local mode_id = TDS.matchmaking_map[current_mode]
                 local payload
 
-                if mode_id then
+                if current_mode == "PizzaParty" or current_mode == "Hardcore" or current_mode == "PollutedWasteland" or current_mode == "Badlands" then
                     payload = {
-                        mode = mode_id,
+                        mode = current_mode,
                         count = 1
                     }
                 else
