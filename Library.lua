@@ -1508,9 +1508,24 @@ local function rejoin_match()
             local ok, result = pcall(function()
                 local payload
 
-                if current_mode == "PizzaParty" or current_mode == "Hardcore" or current_mode == "PollutedWasteland" or current_mode == "Badlands" then
+                if current_mode == "PizzaParty" then
                     payload = {
-                        mode = current_mode,
+                        mode = "halloween",
+                        count = 1
+                    }
+                elseif current_mode == "Hardcore" then
+                    payload = {
+                        mode = "hardcore",
+                        count = 1
+                    }
+                elseif current_mode == "PollutedWasteland" then
+                    payload = {
+                        mode = "polluted",
+                        count = 1
+                    }
+                elseif current_mode == "Badlands" then
+                    payload = {
+                        mode = "badlands",
                         count = 1
                     }
                 else
