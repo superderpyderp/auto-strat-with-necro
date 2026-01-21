@@ -1028,7 +1028,7 @@ local Misc = Window:Tab({Title = "Misc", Icon = "box"}) do
             if sticker_spam then
                 task.spawn(function()
                     while sticker_spam do
-                        for i = 1, 100 do
+                        for i = 1, 9999 do
                             if not sticker_spam then break end
                             
                             local args = {"Flex"}
