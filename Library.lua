@@ -7,6 +7,7 @@ local run_service = game:GetService("RunService")
 local teleport_service = game:GetService("TeleportService")
 local marketplace_service = game:GetService("MarketplaceService")
 local replicated_storage = game:GetService("ReplicatedStorage")
+local pathfinding_service = game:GetService("PathfindingService")
 local http_service = game:GetService("HttpService")
 local remote_func = replicated_storage:WaitForChild("RemoteFunction")
 local remote_event = replicated_storage:WaitForChild("RemoteEvent")
@@ -1071,32 +1072,19 @@ local Main = Window:Tab({Title = "Main", Icon = "stamp"}) do
         Title = "Sell Selected",
         Desc = "",
         Callback = function()
-            Window:Dialog({
-                Title = "Do you want to sell the selected towers?",
-                Button1 = {
-                    Title = "Confirm",
-                    Color = Color3.fromRGB(226, 39, 6),
-                    Callback = function()
-                        if selected_tower then
-                            for _, v in pairs(workspace.Towers:GetChildren()) do
-                                if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == selected_tower and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
-                                    remote_func:InvokeServer("Troops", "Sell", {Troop = v})
-                                end
-                            end
-                            Window:Notify({
-                                Title = "ADS",
-                                Desc = "Attempted to sell all the selected towers!",
-                                Time = 3,
-                                Type = "normal"
-                            })
-                        end
+            if selected_tower then
+                for _, v in pairs(workspace.Towers:GetChildren()) do
+                    if v:FindFirstChild("TowerReplicator") and v.TowerReplicator:GetAttribute("Name") == selected_tower and v.TowerReplicator:GetAttribute("OwnerId") == local_player.UserId then
+                        remote_func:InvokeServer("Troops", "Sell", {Troop = v})
                     end
-                },
-                Button2 = {
-                    Title = "Cancel",
-                    Color = Color3.fromRGB(0, 188, 0)
-                }
-            })
+                end
+                Window:Notify({
+                    Title = "ADS",
+                    Desc = "Attempted to sell all the selected towers!",
+                    Time = 3,
+                    Type = "normal"
+                })
+            end
         end
     })
 
@@ -3114,15 +3102,82 @@ local function start_auto_pickups()
             local hrp = get_root()
 
             if folder and hrp then
+                local char = hrp.Parent
+                local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+                local function move_to_pos(target_pos)
+                    if not humanoid then
+                        return false
+                    end
+                    local function move_direct(pos)
+                        humanoid:MoveTo(pos)
+                        local start_t = os.clock()
+                        while os.clock() - start_t < 2 do
+                            if not _G.AutoPickups then
+                                return false
+                            end
+                            if (hrp.Position - pos).Magnitude < 4 then
+                                return true
+                            end
+                            task.wait(0.1)
+                        end
+                        return (hrp.Position - pos).Magnitude < 4
+                    end
+                    local path = pathfinding_service:CreatePath({
+                        AgentRadius = 2,
+                        AgentHeight = 6,
+                        AgentCanJump = true,
+                        AgentJumpHeight = 7,
+                        AgentMaxSlope = 45
+                    })
+                    local ok = pcall(function()
+                        path:ComputeAsync(hrp.Position, target_pos)
+                    end)
+                    if ok and path.Status == Enum.PathStatus.Success then
+                        local waypoints = path:GetWaypoints()
+                        local blocked_conn = nil
+                        blocked_conn = path.Blocked:Connect(function()
+                            if blocked_conn then
+                                blocked_conn:Disconnect()
+                            end
+                            if _G.AutoPickups then
+                                task.spawn(function()
+                                    move_to_pos(target_pos)
+                                end)
+                            end
+                        end)
+                        for _, wp in ipairs(waypoints) do
+                            if not _G.AutoPickups then
+                                if blocked_conn then
+                                    blocked_conn:Disconnect()
+                                end
+                                return false
+                            end
+                            if wp.Action == Enum.PathWaypointAction.Jump then
+                                humanoid.Jump = true
+                            end
+                            if not move_direct(wp.Position) then
+                                if blocked_conn then
+                                    blocked_conn:Disconnect()
+                                end
+                                return false
+                            end
+                        end
+                        if blocked_conn then
+                            blocked_conn:Disconnect()
+                        end
+                        return true
+                    end
+                    return move_direct(target_pos)
+                end
+
                 for _, item in ipairs(folder:GetChildren()) do
                     if not _G.AutoPickups then break end
 
                     if item:IsA("MeshPart") and (item.Name == "SnowCharm" or item.Name == "Lorebook") then
                         if not is_void_charm(item) then
-                            local old_pos = hrp.CFrame
-                            hrp.CFrame = item.CFrame * CFrame.new(0, 3, 0)
+                            local target_pos = item.Position + Vector3.new(0, 3, 0)
+                            move_to_pos(target_pos)
                             task.wait(0.2)
-                            hrp.CFrame = old_pos
                             task.wait(0.3)
                         end
                     end
