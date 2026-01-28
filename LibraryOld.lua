@@ -875,11 +875,11 @@ current_equipped_towers = get_equipped_towers()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/DuxiiT/auto-strat/refs/heads/main/Sources/UI.lua"))()
 
 local Window = Library:Window({
-    Title = "ADS",
-    Desc = "AFK Defense Simulator",
+    Title = "Aether Hub",
+    Desc = "your #1 hub",
     Theme = "Dark",
     DiscordLink = "https://discord.gg/autostrat",
-    Icon = 105059922903197,
+    Icon = 126403638319957,
     Config = {
         Keybind = Enum.KeyCode.LeftControl,
         Size = UDim2.new(0, 500, 0, 400)
