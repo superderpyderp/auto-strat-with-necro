@@ -3486,7 +3486,9 @@ local function start_auto_necro()
     auto_necro_running = true
 
     task.spawn(function()
+        local idx = 1
         while _G.AutoNecro do
+        local necromancer = {}
             local towers_folder = workspace:FindFirstChild("Towers")
 
             if towers_folder then
@@ -3495,21 +3497,24 @@ local function start_auto_necro()
                     and towers:GetAttribute("Name") == "Necromancer"
                     and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId
                     and (towers:GetAttribute("Upgrade") or 0) >= 0 then
-                        Necro = towers.Parent
+                        necromancer[#necromancer + 1] = towers.Parent
                     end
                 end
             end
 
-            if Necro then
-                remote_func:InvokeServer(
-                    "Troops",
-                    "Abilities",
-                    "Activate",
-                    { Troop = Necro, Name = "Raise The Dead", Data = {} }
-                )
+            if #necromancer >= 1 then
+                if idx > #necromancer then idx = 1 end
+
+                local current_necromancer = necromancer[idx]
+                    remote_func:InvokeServer(
+                        "Troops",
+                        "Abilities",
+                        "Activate",
+                        { Troop = Necro, Name = "Raise The Dead", Data = {} }
+                    )
             end
 
-            task.wait(1)
+            task.wait(0.1)
         end
 
         auto_necro_running = false
