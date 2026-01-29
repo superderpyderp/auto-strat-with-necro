@@ -3516,7 +3516,7 @@ local function start_auto_necro()
             if response then 
                 idx += 1 
             else
-                task.wait(0.5)
+                task.wait(1)
             end
 
             task.wait(0.1)
