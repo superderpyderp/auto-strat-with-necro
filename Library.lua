@@ -3499,7 +3499,7 @@ local function start_auto_necro()
                 end
             end
 
-            if DJ then
+            if Necro then
                 remote_func:InvokeServer(
                     "Troops",
                     "Abilities",
