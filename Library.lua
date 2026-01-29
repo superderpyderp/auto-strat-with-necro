@@ -3506,6 +3506,7 @@ local function start_auto_necro()
                 if idx > #necromancer then idx = 1 end
 
                 local current_necromancer = necromancer[idx]
+                print("ability for", current_necromancer, "rn) 
                 remote_func:InvokeServer(
                     "Troops",
                     "Abilities",
