@@ -3413,7 +3413,6 @@ local function start_auto_chain()
                 end
 
                 local response = remote_func:InvokeServer(
-                    print("ability for", current_commander, "rn")
                     "Troops",
                     "Abilities",
                     "Activate",
@@ -3488,6 +3487,7 @@ local function start_auto_necro()
 
     task.spawn(function()
         local idx = 1
+
         while _G.AutoNecro do
             local necromancer = {}
             local towers_folder = workspace:FindFirstChild("Towers")
@@ -3503,11 +3503,12 @@ local function start_auto_necro()
                 end
             end
 
-            if #necromancer >= 1 then
+            if #necromancer >= 3 then
                 if idx > #necromancer then idx = 1 end
 
                 local current_necromancer = necromancer[idx]
-                print("ability for", current_necromancer, "rn") 
+                local replicator = current_commander:FindFirstChild("TowerReplicator")
+                local upgrade_level = replicator and replicator:GetAttribute("Upgrade") or 0
                 remote_func:InvokeServer(
                     "Troops",
                     "Abilities",
