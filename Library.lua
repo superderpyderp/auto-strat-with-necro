@@ -131,6 +131,7 @@ local default_settings = {
     AutoChain = false,
     SupportCaravan = false,
     AutoDJ = false,
+    AutoNecro = false
     AutoRejoin = true,
     SellFarms = false,
     AutoMercenary = false,
@@ -932,6 +933,15 @@ local Autostrat = Window:Tab({Title = "Autostrat", Icon = "star"}) do
         Value = _G.AutoDJ,
         Callback = function(v)
             set_setting("AutoDJ", v)
+        end
+    })
+
+    Autostrat:Toggle({
+        Title = "Auto Necro",
+        Desc = "Uses Necromancer Ability",
+        Value = _G.AutoNecro,
+        Callback = function(v)
+            set_setting("AutoNecro", v)
         end
     })
 
