@@ -3502,8 +3502,7 @@ local function start_auto_necro()
                     end
                 end
             end
-            if #necromancer >= 1 then
-                print("necro detected")
+            if #necromancer >= 1 and necromancer ~= nil then
                 if idx > #necromancer then idx = 1 end
                 local current_necromancer = necromancer[idx]
                 local replicator = current_necromancer:FindFirstChild("TowerReplicator")
