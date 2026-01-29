@@ -3493,7 +3493,8 @@ local function start_auto_necro()
                 for _, towers in ipairs(towers_folder:GetDescendants()) do
                     if towers:IsA("Folder") and towers.Name == "TowerReplicator"
                     and towers:GetAttribute("Name") == "Necromancer"
-                    and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId then
+                    and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId
+                    and (towers:GetAttribute("Upgrade") or 0) >= 0 then
                         Necro = towers.Parent
                     end
                 end
