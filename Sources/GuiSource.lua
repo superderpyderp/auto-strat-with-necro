@@ -19,6 +19,7 @@ local function save_settings()
         AutoPickups = _G.AutoPickups,
         AutoChain = _G.AutoChain,
         AutoDJ = _G.AutoDJ,
+        AutoNecro = _G.AutoNecro
         AntiLag = _G.AntiLag,
         ClaimRewards = _G.ClaimRewards,
         SendWebhook = _G.SendWebhook,
@@ -37,6 +38,7 @@ local function load_settings()
         AutoPickups = false,
         AutoChain = false,
         AutoDJ = false,
+        AutoNecro = false,
         AntiLag = false,
         ClaimRewards = false,
         SendWebhook = false,
@@ -348,6 +350,7 @@ end
 create_toggle("Auto Skip Waves", "AutoSkip", main_page)
 create_toggle("Auto Chain", "AutoChain", main_page)
 create_toggle("Auto DJ Booth", "AutoDJ", main_page)
+create_toggle("Auto Necromancer", "AutoNecro", main_page)
 create_toggle("Auto Mercenary Base", "AutoMercenary", main_page)
 create_toggle_with_input("Sell Farms", "SellFarms", "SellFarmsWave", main_page)
 create_slider("Path Distance", "PathDistance", 0, 300, main_page)
