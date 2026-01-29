@@ -3503,24 +3503,22 @@ local function start_auto_necro()
                 end
             end
 
-            if #necromancer >= 3 then
-                if idx > #necromancer then idx = 1 end
-                print("got past the necro placement count check")
-                local current_necromancer = necromancer[idx]
-                local replicator = current_necromancer:FindFirstChild("TowerReplicator")
-                local upgrade_level = replicator and replicator:GetAttribute("Upgrade") or 0
-                print("ability for",idx)
-                local response = remote_func:InvokeServer(
-                    "Troops",
-                    "Abilities",
-                    "Activate",
-                    { Troop = current_necromancer, Name = "Raise The Dead", Data = {} }
-                )
-                if response then 
-                    idx += 1 
-                else
-                    task.wait(0.5)
-                end
+            if idx > #necromancer then idx = 1 end
+            print("got past the necro placement count check")
+            local current_necromancer = necromancer[idx]
+            local replicator = current_necromancer:FindFirstChild("TowerReplicator")
+            local upgrade_level = replicator and replicator:GetAttribute("Upgrade") or 0
+            print("ability for",idx)
+            local response = remote_func:InvokeServer(
+                "Troops",
+                "Abilities",
+                "Activate",
+                { Troop = current_necromancer, Name = "Raise The Dead", Data = {} }
+            )
+            if response then 
+                idx += 1 
+            else
+                task.wait(0.5)
             end
 
             task.wait(0.1)
