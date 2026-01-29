@@ -3470,6 +3470,40 @@ local function start_auto_dj_booth()
     end)
 end
 
+local function start_auto_necro()
+    if auto_necro or not _G.AutoNecro then return end
+    auto_necro_running = true
+
+    task.spawn(function()
+        while _G.AutoNecro do
+            local towers_folder = workspace:FindFirstChild("Towers")
+
+            if towers_folder then
+                for _, towers in ipairs(towers_folder:GetDescendants()) do
+                    if towers:IsA("Folder") and towers.Name == "TowerReplicator"
+                    and towers:GetAttribute("Name") == "Necromancer"
+                    and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId then
+                        Necro = towers.Parent
+                    end
+                end
+            end
+
+            if DJ then
+                remote_func:InvokeServer(
+                    "Troops",
+                    "Abilities",
+                    "Activate",
+                    { Troop = Necromancer, Name = "Raise The Dead", Data = {} }
+                )
+            end
+
+            task.wait(1)
+        end
+
+        auto_necro_running = false
+    end)
+end
+
 local function start_auto_mercenary()
     if not _G.AutoMercenary and not _G.AutoMilitary then return end
         
