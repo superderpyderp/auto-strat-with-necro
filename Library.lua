@@ -3496,7 +3496,6 @@ local function start_auto_necro()
                     and towers:GetAttribute("OwnerId") == game.Players.LocalPlayer.UserId
                     and (towers:GetAttribute("Upgrade") or 0) >= 0 then
                         Necro = towers.Parent
-                        print("nigga detected")
                     end
                 end
             end
@@ -3506,7 +3505,7 @@ local function start_auto_necro()
                     "Troops",
                     "Abilities",
                     "Activate",
-                    { Troop = Necromancer, Name = "Raise The Dead", Data = {} }
+                    { Troop = Necro, Name = "Raise The Dead", Data = {} }
                 )
             end
 
