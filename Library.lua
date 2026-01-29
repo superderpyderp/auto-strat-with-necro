@@ -3504,11 +3504,9 @@ local function start_auto_necro()
             end
 
             if idx > #necromancer then idx = 1 end
-            print("got past the necro placement count check")
             local current_necromancer = necromancer[idx]
             local replicator = current_necromancer:FindFirstChild("TowerReplicator")
             local upgrade_level = replicator and replicator:GetAttribute("Upgrade") or 0
-            print("ability for",idx)
             local response = remote_func:InvokeServer(
                 "Troops",
                 "Abilities",
