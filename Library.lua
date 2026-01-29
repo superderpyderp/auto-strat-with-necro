@@ -3413,6 +3413,7 @@ local function start_auto_chain()
                 end
 
                 local response = remote_func:InvokeServer(
+                    print("ability for", current_commander, "rn")
                     "Troops",
                     "Abilities",
                     "Activate",
