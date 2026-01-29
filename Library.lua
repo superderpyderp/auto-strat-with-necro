@@ -99,6 +99,7 @@ local auto_claim_rewards = false
 local anti_lag_running = false
 local auto_chain_running = false
 local auto_dj_running = false
+local auto_necro_running = false
 local auto_mercenary_base_running = false
 local auto_military_base_running = false
 local sell_farms_running = false
