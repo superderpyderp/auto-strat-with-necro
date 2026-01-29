@@ -3517,8 +3517,7 @@ local function start_auto_necro()
                     { Troop = current_necromancer, Name = "Raise The Dead", Data = {} }
                 )
 
-                if response then
-                    idx += 1
+                if response then idx += 1 end
             end
 
             task.wait(0.1)
