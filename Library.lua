@@ -3488,7 +3488,7 @@ local function start_auto_necro()
     task.spawn(function()
         local idx = 1
         while _G.AutoNecro do
-        local necromancer = {}
+            local necromancer = {}
             local towers_folder = workspace:FindFirstChild("Towers")
 
             if towers_folder then
@@ -3506,12 +3506,12 @@ local function start_auto_necro()
                 if idx > #necromancer then idx = 1 end
 
                 local current_necromancer = necromancer[idx]
-                    remote_func:InvokeServer(
-                        "Troops",
-                        "Abilities",
-                        "Activate",
-                        { Troop = Necro, Name = "Raise The Dead", Data = {} }
-                    )
+                remote_func:InvokeServer(
+                    "Troops",
+                    "Abilities",
+                    "Activate",
+                    { Troop = Necro, Name = "Raise The Dead", Data = {} }
+                )
             end
 
             task.wait(0.1)
