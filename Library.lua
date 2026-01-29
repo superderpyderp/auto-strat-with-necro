@@ -3510,7 +3510,7 @@ local function start_auto_necro()
                     "Troops",
                     "Abilities",
                     "Activate",
-                    { Troop = Necro, Name = "Raise The Dead", Data = {} }
+                    { Troop = current_necromancer, Name = "Raise The Dead", Data = {} }
                 )
             end
 
