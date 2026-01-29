@@ -3652,6 +3652,10 @@ task.spawn(function()
             start_auto_dj_booth()
         end
 
+        if _G.AutoNecro and not auto_necro_running then
+            start_auto_necro()
+        end
+
         if _G.AutoMercenary and not auto_mercenary_base_running then
             start_auto_mercenary()
         end
