@@ -3509,6 +3509,7 @@ local function start_auto_necro()
                 local current_necromancer = necromancer[idx]
                 local replicator = current_commander:FindFirstChild("TowerReplicator")
                 local upgrade_level = replicator and replicator:GetAttribute("Upgrade") or 0
+                print("ability for",idx)
                 remote_func:InvokeServer(
                     "Troops",
                     "Abilities",
